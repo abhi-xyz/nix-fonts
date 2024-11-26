@@ -4,6 +4,7 @@ let
   availablefonts = {
     lora = pkgs.callPackage ./fonts/lora/default.nix { stdenvnocc = pkgs.stdenv; };
     inter = pkgs.callPackage ./fonts/inter/default.nix { stdenvnocc = pkgs.stdenv; };
+    eb-garamond = pkgs.callPackage ./fonts/eb-garamond/default.nix { stdenvnocc = pkgs.stdenv; };
   };
 
   # Define the fonts option for selecting a list of font names
