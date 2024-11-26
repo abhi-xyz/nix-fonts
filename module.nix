@@ -15,10 +15,10 @@ let
   };
 
   # Map the selected font names (from the Fonts option) to actual font packages
-  selectedFontPackages = lib.attrValues (lib.filterAttrs
-    (fontName: availableFonts.${fontName} != null)
-    (lib.listToAttrs (lib.map (fontName: { name = fontName; value = availableFonts.${fontName}; }) config.fonts.nix-fonts.Fonts)));
-
+  selectedFontPackages = lib.filterAttrs
+    (fontName: availableFonts.${fontName} != null)  # Filter out fonts that don't exist
+    (lib.listToAttrs (map (fontName: { name = fontName; value = lib.getAttr fontName availableFonts null; }) config.fonts.nix-fonts.Fonts));
+    
 in {
   options.fonts.nix-fonts = {
     enable = lib.mkEnableOption "Enable the nix-fonts.";
@@ -27,7 +27,7 @@ in {
 
   config = lib.mkIf config.fonts.nix-fonts.enable {
     # Only add valid (non-null) font packages to the `fonts.packages`
-    fonts.packages = selectedFontPackages;
+    fonts.packages = lib.attrValues selectedFontPackages;
   };
 }
 
