@@ -4,6 +4,7 @@ let
     lora = pkgs.callPackage ./fonts/lora/default.nix { stdenvnocc = pkgs.stdenv; };
     inter = pkgs.callPackage ./fonts/inter/default.nix { stdenvnocc = pkgs.stdenv; };
     eb-garamond = pkgs.callPackage ./fonts/eb-garamond/default.nix { stdenvnocc = pkgs.stdenv; };
+    playfair = pkgs.callPackage ./fonts/playfair/default.nix { stdenvnocc = pkgs.stdenv; };
   };
 
   fonts = lib.mkOption {
