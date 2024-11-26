@@ -14,13 +14,11 @@ let
     description = "List of fonts to enable. Available options: lora, inter.";
   };
 
-  # Safely retrieve font packages based on the user's selection
-  selectedFontPackages = lib.attrValues (lib.filterAttrs
-    (fontName: availableFonts.${fontName} != null)  # Filter out invalid fonts
-    (lib.listToAttrs (map (fontName: {
-      name = fontName;
-      value = availableFonts.${fontName} or null;
-    }) config.fonts.nix-fonts.Fonts)));
+  # Map selected font names to font packages directly
+  selectedFontPackages = lib.listToAttrs (map (fontName: {
+    name = fontName;
+    value = availableFonts.${fontName};  # Directly use the font package
+  }) config.fonts.nix-fonts.Fonts);
 
 in {
   options.fonts.nix-fonts = {
@@ -29,8 +27,8 @@ in {
   };
 
   config = lib.mkIf config.fonts.nix-fonts.enable {
-    # Add selected font packages to the fonts list, filtering out null values
-    fonts.packages = selectedFontPackages;
+    # Add selected font packages to the fonts list
+    fonts.packages = lib.attrValues selectedFontPackages;
   };
 }
 
