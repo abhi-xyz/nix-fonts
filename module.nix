@@ -1,24 +1,27 @@
 
 { config, pkgs, lib, ... }: 
 let
-  # Available font packages
+  # Define available font packages
   availableFonts = {
     lora = pkgs.callPackage ./fonts/lora/default.nix { stdenvnocc = pkgs.stdenv; };
     inter = pkgs.callPackage ./fonts/inter/default.nix { stdenvnocc = pkgs.stdenv; };
   };
 
-  # Define the Fonts option where users can select a list of font names
+  # Define the Fonts option for selecting a list of font names
   Fonts = lib.mkOption {
     type = lib.types.listOf lib.types.str;
-    default = ["lora"];  # Default to using "lora" font
+    default = ["lora"];  # Default to "lora"
     description = "List of fonts to enable. Available options: lora, inter.";
   };
 
-  # Map the selected font names (from the Fonts option) to actual font packages
-  selectedFontPackages = lib.filterAttrs
-    (fontName: availableFonts.${fontName} != null)  # Filter out fonts that don't exist
-    (lib.listToAttrs (map (fontName: { name = fontName; value = lib.getAttr fontName availableFonts null; }) config.fonts.nix-fonts.Fonts));
-    
+  # Safely retrieve font packages based on the user's selection
+  selectedFontPackages = lib.attrValues (lib.filterAttrs
+    (fontName: availableFonts.${fontName} != null)  # Filter out invalid fonts
+    (lib.listToAttrs (map (fontName: {
+      name = fontName;
+      value = availableFonts.${fontName} or null;
+    }) config.fonts.nix-fonts.Fonts)));
+
 in {
   options.fonts.nix-fonts = {
     enable = lib.mkEnableOption "Enable the nix-fonts.";
@@ -26,8 +29,8 @@ in {
   };
 
   config = lib.mkIf config.fonts.nix-fonts.enable {
-    # Only add valid (non-null) font packages to the `fonts.packages`
-    fonts.packages = lib.attrValues selectedFontPackages;
+    # Add selected font packages to the fonts list, filtering out null values
+    fonts.packages = selectedFontPackages;
   };
 }
 
