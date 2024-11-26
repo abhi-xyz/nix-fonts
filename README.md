@@ -1,6 +1,13 @@
 # nix-fonts
+
+## Getting Started
+
 ```nix
-{pkgs, ...}: let
+{
+pkgs,
+...
+}:
+let
 
   LoraFont = pkgs.callPackage (pkgs.fetchurl {
     url = "https://raw.githubusercontent.com/abhi-xyz/nix-fonts/refs/heads/master/fonts/lora/default.nix";
@@ -11,20 +18,12 @@
     url = "https://raw.githubusercontent.com/abhi-xyz/nix-fonts/refs/heads/master/fonts/inter/default.nix";
     sha256 = "sha256-c/d3n+YNhFrozWDdQZYGOgu/qkpVsSOZCSn7AjFLw9A=";
   }) {stdenvnocc = pkgs.stdenv;};
-in {
+
+in
+{
   fonts.packages = with pkgs; [
-    maple-mono
     LoraFont
     InterFont
-    (nerdfonts.override {
-      fonts = [
-        "FiraCode"
-        "FiraMono"
-        "Iosevka"
-        "JetBrainsMono"
-        "NerdFontsSymbolsOnly"
-      ];
-    })
   ];
 }
 ```
