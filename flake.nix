@@ -17,8 +17,8 @@
       default = self.packages.${system}.lora;
     };
     nixosModules = {
-      "lora" = ./module.nix;
-      nixosModules.default = self.nixosModules.lora;
+      nix-fonts = ./module.nix;
+      nixosModules.default = ./module.nix;
     };
   };
 }
